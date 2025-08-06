@@ -1,0 +1,46 @@
+/* Neon Green Theme Variables */
+:root {
+  /* Neon Green Colors */
+  --primary-50: #f0fdf4;
+  --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
+  --primary-500: #22c55e;
+  --primary-600: #16a34a;
+  --primary-700: #15803d;
+  --primary-800: #166534;
+  --primary-900: #14532d;
+  
+  /* Neon accent */
+  --neon-green: #00ff88;
+  --neon-glow: 0 0 20px rgba(0, 255, 136, 0.5);
+  
+  /* Dark theme colors */
+  --dark-50: #f8fafc;
+  --dark-100: #f1f5f9;
+  --dark-200: #e2e8f0;
+  --dark-300: #cbd5e1;
+  --dark-400: #94a3b8;
+  --dark-500: #64748b;
+  --dark-600: #475569;
+  --dark-700: #334155;
+  --dark-800: #1e293b;
+  --dark-900: #0f172a;
+  
+  /* Light theme */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --border-color: #e2e8f0;
+}
+
+.dark {
+  /* Dark theme overrides */
+  --bg-primary: var(--dark-900);
+  --bg-secondary: var(--dark-800);
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --border-color: var(--dark-700);
+}

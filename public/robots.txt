@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.railux.com/sitemap.xml
+
+# Block admin and private pages
+Disallow: /admin/
+Disallow: /api/
+Disallow: /uploads/
+Disallow: /*.json
+
+# Allow important pages
+Allow: /blog/
+Allow: /about/
+Allow: /contact/
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Allow CSS and JS files
+Allow: /assets/
+Allow: /*.css$
+Allow: /*.js$
+
+# Disallow search parameters
+Disallow: /*?*
+Disallow: /search?*

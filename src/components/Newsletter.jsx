@@ -1,151 +1,110 @@
-import React, { useState } from 'react';
-import { Mail, Send, Check, X } from 'lucide-react';
-// Removed motion imports
+import React, { useState } from 'react'
+import { Mail, CheckCircle } from 'lucide-react'
 
-const Newsletter = ({ variant = 'default', className = '' }) => {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
-  const [message, setMessage] = useState('');
+const Newsletter = () => {
+  const [email, setEmail] = useState('')
+  const [isSubscribed, setIsSubscribed] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setStatus('loading');
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // For demo, randomly succeed or fail
-      if (Math.random() > 0.3) {
-        setStatus('success');
-        setMessage('Thank you for subscribing! Check your email for confirmation.');
-        setEmail('');
-      } else {
-        setStatus('error');
-        setMessage('Something went wrong. Please try again later.');
-      }
-    } catch (error) {
-      setStatus('error');
-      setMessage('Network error. Please check your connection.');
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (email) {
+      setIsSubscribed(true)
+      setEmail('')
+      setTimeout(() => setIsSubscribed(false), 3000)
     }
-
-    // Reset status after 5 seconds
-    setTimeout(() => {
-      setStatus('idle');
-      setMessage('');
-    }, 5000);
-  };
-
-  const baseClasses = 'relative bg-gradient-to-br from-primary-50 to-secondary-50 dark:from-primary-900/20 dark:to-secondary-900/20 rounded-2xl p-8 border border-primary-200 dark:border-primary-800';
-  
-  const variantClasses = {
-    default: 'max-w-2xl mx-auto',
-    compact: 'max-w-lg',
-    full: 'w-full'
-  };
-
-  if (status === 'success') {
-    return (
-      <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-            <Check className="w-8 h-8 text-green-600 dark:text-green-400" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Successfully Subscribed!
-          </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            {message}
-          </p>
-          <button
-            onClick={() => setStatus('idle')}
-            className="btn-secondary hover:scale-105 transition-transform"
-          >
-            Subscribe Another Email
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (status === 'error') {
-    return (
-      <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
-        <div className="text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-            <X className="w-8 h-8 text-red-600 dark:text-red-400" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Subscription Failed
-          </h3>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">
-            {message}
-          </p>
-          <button
-            onClick={() => setStatus('idle')}
-            className="btn-secondary hover:scale-105 transition-transform"
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
   }
 
   return (
-    <div className={`${baseClasses} ${variantClasses[variant]} ${className}`}>
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 mx-auto mb-6 bg-primary-100 dark:bg-primary-900/30 rounded-full flex items-center justify-center">
-          <Mail className="w-8 h-8 text-primary-600 dark:text-primary-400" />
-        </div>
-        
-        <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
-          Stay Updated
-        </h3>
-        
-        <p className="text-gray-600 dark:text-gray-300 text-lg max-w-md mx-auto">
-          Get the latest news, updates, and exclusive content delivered straight to your inbox.
-        </p>
+    <section className="py-20 bg-dark-900 relative overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-neon-500/10 rounded-full blur-3xl" />
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email address"
-            className="flex-1 input-field"
-            disabled={status === 'loading'}
-          />
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="btn-primary flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 transition-transform"
-          >
-            {status === 'loading' ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <>
-                <Send size={18} />
-                <span>Subscribe</span>
-              </>
-            )}
-          </button>
+      
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        
+        {/* Icon */}
+        <div className="mb-8">
+          <div className="w-20 h-20 mx-auto bg-gradient-neon rounded-2xl flex items-center justify-center shadow-neon-lg">
+            <Mail className="w-10 h-10 text-dark-900" />
+          </div>
         </div>
         
-        <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-          We respect your privacy. Unsubscribe at any time.
+        {/* Content */}
+        <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <span className="text-white">Haberlerden</span>
+          <span className="neon-text"> Haberdar Olun</span>
+        </h2>
+        
+        <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+          Yeni ürünler, özel kampanyalar ve teknoloji haberlerinden 
+          ilk siz haberdar olun.
         </p>
-      </form>
 
-      {/* Background Decoration */}
-      <div className="absolute -top-2 -right-2 w-32 h-32 bg-gradient-to-br from-primary-200 to-secondary-200 dark:from-primary-800/20 dark:to-secondary-800/20 rounded-full opacity-20 blur-2xl"></div>
-      <div className="absolute -bottom-2 -left-2 w-24 h-24 bg-gradient-to-br from-secondary-200 to-primary-200 dark:from-secondary-800/20 dark:to-primary-800/20 rounded-full opacity-20 blur-xl"></div>
-    </div>
-  );
-};
+        {/* Newsletter Form */}
+        {!isSubscribed ? (
+          <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+            <div className="flex gap-4">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="E-mail adresiniz"
+                className="flex-1 px-6 py-4 bg-dark-800 border border-dark-600 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-neon-500 transition-colors"
+                required
+              />
+              <button
+                type="submit"
+                className="btn-neon-fill px-8 py-4 whitespace-nowrap"
+              >
+                Abone Ol
+              </button>
+            </div>
+            
+            <p className="text-gray-500 text-sm mt-4">
+              E-mail adresinizi kimseyle paylaşmıyoruz. İstediğiniz zaman abonelikten çıkabilirsiniz.
+            </p>
+          </form>
+        ) : (
+          <div className="max-w-md mx-auto glass-card p-8 border border-neon-500/50">
+            <CheckCircle className="w-16 h-16 text-neon-500 mx-auto mb-4" />
+            <h3 className="text-2xl font-bold text-white mb-2">Başarılı!</h3>
+            <p className="text-gray-400">
+              E-mail adresiniz başarıyla kaydedildi. 
+              Hoş geldin mesajımızı kontrol edin.
+            </p>
+          </div>
+        )}
 
-export default Newsletter;
+        {/* Features */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+          <div className="text-center">
+            <div className="w-12 h-12 mx-auto mb-4 bg-neon-500/20 rounded-lg flex items-center justify-center">
+              <span className="text-neon-500 font-bold text-xl">🚀</span>
+            </div>
+            <h4 className="text-white font-semibold mb-2">Yeni Ürünler</h4>
+            <p className="text-gray-400 text-sm">En yeni teknoloji ürünlerinden ilk haberdar olun</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="w-12 h-12 mx-auto mb-4 bg-neon-500/20 rounded-lg flex items-center justify-center">
+              <span className="text-neon-500 font-bold text-xl">💰</span>
+            </div>
+            <h4 className="text-white font-semibold mb-2">Özel İndirimler</h4>
+            <p className="text-gray-400 text-sm">Sadece abone üyelerine özel kampanyalar</p>
+          </div>
+          
+          <div className="text-center">
+            <div className="w-12 h-12 mx-auto mb-4 bg-neon-500/20 rounded-lg flex items-center justify-center">
+              <span className="text-neon-500 font-bold text-xl">📰</span>
+            </div>
+            <h4 className="text-white font-semibold mb-2">Tech Haberler</h4>
+            <p className="text-gray-400 text-sm">Teknoloji dünyasından son gelişmeler</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default Newsletter

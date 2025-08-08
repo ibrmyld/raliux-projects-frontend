@@ -1,55 +1,104 @@
 import React, { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight, Star, ShoppingCart, Eye } from 'lucide-react'
+import { apiService } from '../services/api.js'
 
-const HeroCarousel = ({ products = [] }) => {
+const HeroCarousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isAutoPlay, setIsAutoPlay] = useState(true)
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [connectionStatus, setConnectionStatus] = useState('checking')
 
-  // Demo ürünler eğer prop gelmezse
-  const demoProducts = [
-    {
-      id: 1,
-      name: "Neon Gaming Keyboard",
-      price: 299.99,
-      image: "https://images.unsplash.com/photo-1601445638532-3c6f6c3aa1d6?w=500&h=500&fit=crop",
-      rating: 4.8,
-      featured: true
-    },
-    {
-      id: 2,
-      name: "RGB Gaming Mouse",
-      price: 159.99,
-      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&h=500&fit=crop",
-      rating: 4.6,
-      featured: true
-    },
-    {
-      id: 3,
-      name: "Ultra Gaming Headset",
-      price: 199.99,
-      image: "https://images.unsplash.com/photo-1599669454699-248893623440?w=500&h=500&fit=crop",
-      rating: 4.9,
-      featured: true
-    },
-    {
-      id: 4,
-      name: "Gaming Monitor 4K",
-      price: 599.99,
-      image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&h=500&fit=crop",
-      rating: 4.7,
-      featured: true
-    },
-    {
-      id: 5,
-      name: "Mechanical Switch Set",
-      price: 89.99,
-      image: "https://images.unsplash.com/photo-1540829917886-91ab031b1764?w=500&h=500&fit=crop",
-      rating: 4.5,
-      featured: true
+  // Ürünleri API'dan yükle
+  useEffect(() => {
+    const loadFeaturedProducts = async () => {
+      try {
+        setLoading(true)
+        setConnectionStatus('checking')
+        
+        // Sadece featured ürünleri al
+        const response = await apiService.getProducts({ 
+          featured: true, 
+          per_page: 5 
+        })
+        
+        // API formatını component formatına çevir
+        const formattedProducts = response.products.map(product => ({
+          id: product.id,
+          name: product.name,
+          price: product.sale_price || product.price,
+          originalPrice: product.sale_price ? product.price : null,
+          image: product.featured_image || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop',
+          rating: 4.5 + Math.random() * 0.5, // Mock rating for now
+          featured: product.is_featured,
+          slug: product.slug,
+          currency: product.currency
+        }))
+        
+        setProducts(formattedProducts)
+        setConnectionStatus(apiService.isBackendConnected() ? 'online' : 'offline')
+        
+      } catch (error) {
+        console.error('Error loading featured products:', error)
+        setConnectionStatus('offline')
+        
+        // Fallback demo products
+        setProducts([
+          {
+            id: 1,
+            name: "Neon Gaming Keyboard",
+            price: 299.99,
+            image: "https://images.unsplash.com/photo-1601445638532-3c6f6c3aa1d6?w=500&h=500&fit=crop",
+            rating: 4.8,
+            featured: true,
+            slug: "neon-gaming-keyboard"
+          },
+          {
+            id: 2,
+            name: "RGB Gaming Mouse", 
+            price: 159.99,
+            image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=500&h=500&fit=crop",
+            rating: 4.6,
+            featured: true,
+            slug: "rgb-gaming-mouse"
+          },
+          {
+            id: 3,
+            name: "Ultra Gaming Headset",
+            price: 199.99,
+            image: "https://images.unsplash.com/photo-1599669454699-248893623440?w=500&h=500&fit=crop",
+            rating: 4.9,
+            featured: true,
+            slug: "ultra-gaming-headset"
+          },
+          {
+            id: 4,
+            name: "Gaming Monitor 4K",
+            price: 599.99,
+            image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&h=500&fit=crop",
+            rating: 4.7,
+            featured: true,
+            slug: "gaming-monitor-4k"
+          },
+          {
+            id: 5,
+            name: "Mechanical Switch Set",
+            price: 89.99,
+            image: "https://images.unsplash.com/photo-1540829917886-91ab031b1764?w=500&h=500&fit=crop",
+            rating: 4.5,
+            featured: true,
+            slug: "mechanical-switch-set"
+          }
+        ])
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
 
-  const items = products.length > 0 ? products : demoProducts
+    loadFeaturedProducts()
+  }, [])
+
+  const items = products
 
   // Auto play
   useEffect(() => {
@@ -102,8 +151,37 @@ const HeroCarousel = ({ products = [] }) => {
     return 'hidden'
   }
 
+  // Loading gösterimi
+  if (loading) {
+    return (
+      <div className="relative min-h-screen lg:h-[120vh] bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin w-16 h-16 border-4 border-neon-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-neon-400 text-lg">Ürünler yükleniyor...</p>
+          <p className="text-gray-500 text-sm mt-2">
+            {connectionStatus === 'checking' ? 'Bağlantı kontrol ediliyor...' : 
+             connectionStatus === 'offline' ? 'Offline modda çalışıyor' : 'Backend\'e bağlanıldı'}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative w-full min-h-screen lg:h-[120vh] bg-gradient-dark overflow-hidden">
+      {/* Connection Status Indicator */}
+      <div className="absolute top-4 right-4 z-50">
+        <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+          connectionStatus === 'online' 
+            ? 'bg-green-500/20 text-green-400 border border-green-500/30' 
+            : connectionStatus === 'offline'
+            ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+            : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
+        }`}>
+          {connectionStatus === 'online' ? '🟢 Online' : 
+           connectionStatus === 'offline' ? '🟠 Offline' : '🔄 Bağlanıyor...'}
+        </div>
+      </div>
       {/* Enhanced Background Effects */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-radial from-neon-500/30 via-neon-500/10 to-transparent" />

@@ -10,9 +10,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  define: {
-    global: 'globalThis',
-  },
+
   server: {
     port: 5173,
     host: true,
@@ -26,12 +24,7 @@ export default defineConfig({
       'react', 
       'react-dom', 
       'react-router-dom',
-      'framer-motion',
-      'lucide-react',
-      'wagmi',
-      '@web3modal/wagmi',
-      'viem',
-      'buffer'
+      'lucide-react'
     ],
     exclude: ['@vite/client', '@vite/env']
   },
@@ -41,8 +34,7 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'router': ['react-router-dom'],
-          'ui': ['framer-motion', 'lucide-react'],
-          'web3': ['wagmi', '@web3modal/wagmi', 'viem']
+          'ui': ['lucide-react']
         }
       }
     },
